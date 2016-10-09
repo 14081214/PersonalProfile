@@ -125,16 +125,32 @@ class Main extends egret.DisplayObjectContainer {
         sky.height = stageH;
 
         var topMask = new egret.Shape();
-        topMask.graphics.beginFill(0x000000, 0.5);
-        topMask.graphics.drawRect(0, 0, stageW, 172);
+        topMask.graphics.beginFill(0xFFFFFF, 0.8);
+        topMask.graphics.drawRect(0, 0, stageW, 892);
         topMask.graphics.endFill();
-        topMask.y = 33;
+        topMask.y = 113;
         this.addChild(topMask);
 
-        var icon:egret.Bitmap = this.createBitmapByName("egret_icon_png");
+        egret.Tween.get(topMask).to({alpha:0},1,egret.Ease.circIn).to({alpha:0.5},2000,egret.Ease.circIn);
+
+        var icon:egret.Bitmap = this.createBitmapByName("mark_01_png");
         this.addChild(icon);
         icon.x = 26;
-        icon.y = 33;
+        icon.y = 36;
+
+        icon.touchEnabled = true;//触动图标
+        icon.addEventListener(egret.TouchEvent.TOUCH_MOVE,()=>{
+            egret.Tween.get(icon).to({x:560},3000,egret.Ease.circIn).to({y:1033},5000,egret.Ease.circIn).to({x:26},3000,egret.Ease.circIn).to({y:36},5000,egret.Ease.circIn);
+        },this);
+
+        var slide:egret.Bitmap = this.createBitmapByName("mark_02_png");
+        this.addChild(slide);
+        slide.x = 290;
+        slide.y = 1035;
+        slide.touchEnabled = true;
+        slide.addEventListener(egret.TouchEvent.TOUCH_BEGIN,()=>{
+
+        },this);
 
         var line = new egret.Shape();
         line.graphics.lineStyle(2,0xffffff);

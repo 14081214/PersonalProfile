@@ -1,7 +1,7 @@
 {
 	"groups": [
 		{
-			"keys": "bg_jpg,egret_icon_png,description_json,bg_021_jpg",
+			"keys": "bg_jpg,egret_icon_png,description_json,bg_021_jpg,bg_03_jpeg,bg_04_jpg,bg_041_jpg,mark_01_png,mark_02_png",
 			"name": "preload"
 		}
 	],
@@ -25,6 +25,31 @@
 			"name": "bg_021_jpg",
 			"type": "image",
 			"url": "assets/bg_021.jpg"
+		},
+		{
+			"name": "bg_03_jpeg",
+			"type": "image",
+			"url": "assets/bg_03.jpeg"
+		},
+		{
+			"name": "bg_04_jpg",
+			"type": "image",
+			"url": "assets/bg_04.jpg"
+		},
+		{
+			"name": "bg_041_jpg",
+			"type": "image",
+			"url": "assets/bg_041.jpg"
+		},
+		{
+			"name": "mark_01_png",
+			"type": "image",
+			"url": "assets/mark_01.png"
+		},
+		{
+			"name": "mark_02_png",
+			"type": "image",
+			"url": "assets/mark_02.png"
 		}
 	]
 }
