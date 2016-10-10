@@ -116,32 +116,54 @@ class Main extends egret.DisplayObjectContainer {
      * 创建游戏场景
      * Create a game scene
      */
-    private createGameScene():void {
+    
+    private page01;
+    private page02;
+    private stageH;
+    private stageW;
+    private scrollRect;
+    private starttouchPosY：number;
+    private currentPosY;
+
+    private creatrGameScene():void{
+        this.stageH = this.stage.stageHeight;
+        this.stageW = this.stage.stageWidth;
+        this.scrollRect = new egret.Rectangle(0,0,this.stageW,this.stageH*2);
+        this.starttouchPosY = 0；
+
+
+        this.touchEnabled = true;
+
+        this.page01 = new egret.DisplayObjectContainer;
+        this.addChild(this.page01);
+        this.page01.width = this.stageW;
+        this.page01.height = this.stageH;
+
         var sky:egret.Bitmap = this.createBitmapByName("bg_021_jpg");
         this.addChild(sky);
-        var stageW:number = this.stage.stageWidth;
-        var stageH:number = this.stage.stageHeight;
-        sky.width = stageW;
-        sky.height = stageH;
+        var stageW01:number = this.stage.stageWidth;
+        var stageH02:number = this.stage.stageHeight;
+        sky.width = this.stageW;
+        sky.height = this.stageH;
 
         var topMask = new egret.Shape();
         topMask.graphics.beginFill(0xFFFFFF, 0.8);
-        topMask.graphics.drawRect(0, 0, stageW, 892);
+        topMask.graphics.drawRect(0, 0, this.stageW, 892);
         topMask.graphics.endFill();
-        topMask.y = 113;
+        topMask.y = 125;
         this.addChild(topMask);
 
         egret.Tween.get(topMask).to({alpha:0},1,egret.Ease.circIn).to({alpha:0.5},2000,egret.Ease.circIn);
 
         var icon:egret.Bitmap = this.createBitmapByName("mark_01_png");
         this.addChild(icon);
-        icon.x = 26;
-        icon.y = 36;
+        icon.x = 36;
+        icon.y = 43;
 
         icon.touchEnabled = true;//触动图标
-        icon.addEventListener(egret.TouchEvent.TOUCH_MOVE,()=>{
-            egret.Tween.get(icon).to({x:560},3000,egret.Ease.circIn).to({y:1033},5000,egret.Ease.circIn).to({x:26},3000,egret.Ease.circIn).to({y:36},5000,egret.Ease.circIn);
-        },this);
+        //icon.addEventListener(egret.TouchEvent.TOUCH_MOVE,()=>{
+            egret.Tween.get(icon,{loop:true}).to({y:1033},6000,egret.Ease.sineIn).to({x:550},4000,egret.Ease.sineIn).to({y:43},6000,egret.Ease.sineIn).to({y:1033},6000,egret.Ease.sineIn).to({x:36},4000,egret.Ease.sineIn).to({y:43},6000,egret.Ease.sineIn);
+        //},this);
 
         var slide:egret.Bitmap = this.createBitmapByName("mark_02_png");
         this.addChild(slide);
@@ -155,33 +177,56 @@ class Main extends egret.DisplayObjectContainer {
         var line = new egret.Shape();
         line.graphics.lineStyle(2,0xffffff);
         line.graphics.moveTo(0,0);
-        line.graphics.lineTo(0,117);
+        line.graphics.lineTo(0,60);
         line.graphics.endFill();
-        line.x = 172;
-        line.y = 61;
+        line.x = 36;
+        line.y = 40;
         this.addChild(line);
+
+        var line2 = new egret.Shape();
+        line2.graphics.lineStyle(2,0xffffff);
+        line2.graphics.moveTo(0,0);
+        line2.graphics.lineTo(0,60);
+        line2.graphics.endFill();
+        line2.x = 620;
+        line2.y = 40;
+        this.addChild(line2);
 
 
         var colorLabel = new egret.TextField();
         colorLabel.textColor = 0xffffff;
-        colorLabel.width = stageW - 172;
+        colorLabel.width = this.stageW - 172;
         colorLabel.textAlign = "center";
-        colorLabel.text = "Hello Egret";
-        colorLabel.size = 24;
-        colorLabel.x = 172;
-        colorLabel.y = 80;
+        colorLabel.text = "Introduce";
+        colorLabel.size = 60;
+        colorLabel.x = 100;
+        colorLabel.y = 50;
         this.addChild(colorLabel);
 
         var textfield = new egret.TextField();
         this.addChild(textfield);
         textfield.alpha = 0;
-        textfield.width = stageW - 172;
+        textfield.width = this.stageW - 172;
         textfield.textAlign = egret.HorizontalAlign.CENTER;
         textfield.size = 24;
         textfield.textColor = 0xffffff;
-        textfield.x = 172;
+        textfield.x = 100;
         textfield.y = 135;
         this.textfield = textfield;
+
+        this.page02 = new egret.DisplayObjectContainer;
+        this.page02.y = this.stageH;
+        this.addChild(this.page02);
+        //page02.y = stageH;
+        this.page02.width = this.stageW;
+        this.page02.height = this.stageH;
+
+        var sky02:egret.Bitmap = this.createBitmapByName("bg_03_jpeg");
+        this.addChild(sky02);
+        var stageW02:number = this.stage.stageWidth;
+        var stageH02:number = this.stage.stageHeight;
+        sky02.width = stageW02;
+        sky02.height = stageH02;
 
         //根据name关键字，异步获取一个json配置文件，name属性请参考resources/resource.json配置文件的内容。
         // Get asynchronously a json configuration file according to name keyword. As for the property of name please refer to the configuration file of resources/resource.json.
@@ -240,6 +285,7 @@ class Main extends egret.DisplayObjectContainer {
     private changeDescription(textfield:egret.TextField, textFlow:Array<egret.ITextElement>):void {
         textfield.textFlow = textFlow;
     }
+
 }
 
 
