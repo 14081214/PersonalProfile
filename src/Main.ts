@@ -119,28 +119,69 @@ class Main extends egret.DisplayObjectContainer {
     
     private page01;
     private page02;
-    private stageH;
-    private stageW;
-    private scrollRect;
-    private starttouchPosY：number;
+    private stageH:number;
+    private stageW:number;
+    //private scrollRect;
+    private starttouchPosY;
     private currentPosY;
+    private moviedistace;
 
-    private creatrGameScene():void{
+    private createGameScene():void{
         this.stageH = this.stage.stageHeight;
         this.stageW = this.stage.stageWidth;
         this.scrollRect = new egret.Rectangle(0,0,this.stageW,this.stageH*2);
-        this.starttouchPosY = 0；
+        var starttouchPosY = 0;
+        var currentPosY = 0;
+        var movedistance = 0;
 
-
+        //this.cacheAsBitmap = true;   //缓存
         this.touchEnabled = true;
+        this.addEventListener(egret.TouchEvent.TOUCH_BEGIN,startScroll,this);
+        this.addEventListener(egret.TouchEvent.TOUCH_END,stopScroll,this);
 
-        this.page01 = new egret.DisplayObjectContainer;
-        this.addChild(this.page01);
-        this.page01.width = this.stageW;
-        this.page01.height = this.stageH;
+        function startScroll(e:egret.TouchEvent):void{
+            if((this.scrollRect.y%this.stageH)!=0){       //防止偏移
+                this.scrollRect.y = currentPosY;
+            }
+            starttouchPosY = e.stageY;
+            currentPosY = this.scrollRect.y;
+            this.addEventListener(egret.TouchEvent.TOUCH_MOVE,onScroll,this);
+        }
+
+        function onScroll(e:egret.TouchEvent):void{
+            var rect:egret.Rectangle = this.scrollRect;
+            movedistance = starttouchPosY - e.stageY;
+            rect.y = currentPosY + movedistance;
+            this.scrollRect = rect;
+            
+        }
+
+        function stopScroll(e:egret.TouchEvent):void{
+            var rect:egret.Rectangle = this.scrollRect;
+            if((movedistance>=(this.stage.stageHight/3))&&currentPosY!=this.stageH){
+                rect.y = currentPosY + this.stageH;
+                this.scrollRect = rect;
+                movedistance = 0;
+            }
+            else if((movedistance<=(-(this.stage.stageHeight/3)))&&currentPosY!=0){
+                rect.y = currentPosY - this.stageH;
+                this.scrollRect = rect;
+                movedistance = 0;
+            }
+            else{
+                movedistance = 0;
+                rect.y = currentPosY;
+                this.scrollRect = rect;
+            }
+        }
+
+        var page01 = new egret.DisplayObjectContainer;
+        this.addChild(page01);
+        page01.width = this.stageW;
+        page01.height = this.stageH;
 
         var sky:egret.Bitmap = this.createBitmapByName("bg_021_jpg");
-        this.addChild(sky);
+        page01.addChild(sky);
         var stageW01:number = this.stage.stageWidth;
         var stageH02:number = this.stage.stageHeight;
         sky.width = this.stageW;
@@ -151,12 +192,12 @@ class Main extends egret.DisplayObjectContainer {
         topMask.graphics.drawRect(0, 0, this.stageW, 892);
         topMask.graphics.endFill();
         topMask.y = 125;
-        this.addChild(topMask);
+        page01.addChild(topMask);
 
         egret.Tween.get(topMask).to({alpha:0},1,egret.Ease.circIn).to({alpha:0.5},2000,egret.Ease.circIn);
 
         var icon:egret.Bitmap = this.createBitmapByName("mark_01_png");
-        this.addChild(icon);
+        page01.addChild(icon);
         icon.x = 36;
         icon.y = 43;
 
@@ -166,7 +207,7 @@ class Main extends egret.DisplayObjectContainer {
         //},this);
 
         var slide:egret.Bitmap = this.createBitmapByName("mark_02_png");
-        this.addChild(slide);
+        page01.addChild(slide);
         slide.x = 290;
         slide.y = 1035;
         slide.touchEnabled = true;
@@ -181,7 +222,7 @@ class Main extends egret.DisplayObjectContainer {
         line.graphics.endFill();
         line.x = 36;
         line.y = 40;
-        this.addChild(line);
+        page01.addChild(line);
 
         var line2 = new egret.Shape();
         line2.graphics.lineStyle(2,0xffffff);
@@ -190,7 +231,7 @@ class Main extends egret.DisplayObjectContainer {
         line2.graphics.endFill();
         line2.x = 620;
         line2.y = 40;
-        this.addChild(line2);
+        page01.addChild(line2);
 
 
         var colorLabel = new egret.TextField();
@@ -201,10 +242,10 @@ class Main extends egret.DisplayObjectContainer {
         colorLabel.size = 60;
         colorLabel.x = 100;
         colorLabel.y = 50;
-        this.addChild(colorLabel);
+        page01.addChild(colorLabel);
 
         var textfield = new egret.TextField();
-        this.addChild(textfield);
+        page01.addChild(textfield);
         textfield.alpha = 0;
         textfield.width = this.stageW - 172;
         textfield.textAlign = egret.HorizontalAlign.CENTER;
@@ -214,19 +255,25 @@ class Main extends egret.DisplayObjectContainer {
         textfield.y = 135;
         this.textfield = textfield;
 
-        this.page02 = new egret.DisplayObjectContainer;
-        this.page02.y = this.stageH;
-        this.addChild(this.page02);
+        var page02 = new egret.DisplayObjectContainer;
+        page02.y = this.stageH;
+        this.addChild(page02);
         //page02.y = stageH;
-        this.page02.width = this.stageW;
-        this.page02.height = this.stageH;
+        page02.width = this.stageW;
+        page02.height = this.stageH;
 
         var sky02:egret.Bitmap = this.createBitmapByName("bg_03_jpeg");
-        this.addChild(sky02);
+        page02.addChild(sky02);
         var stageW02:number = this.stage.stageWidth;
         var stageH02:number = this.stage.stageHeight;
         sky02.width = stageW02;
         sky02.height = stageH02;
+
+        var slide02:egret.Bitmap = this.createBitmapByName("mark_02_png");
+        page02.addChild(slide02);
+        slide02.x = 290;
+        slide02.y = 1035;
+        
 
         //根据name关键字，异步获取一个json配置文件，name属性请参考resources/resource.json配置文件的内容。
         // Get asynchronously a json configuration file according to name keyword. As for the property of name please refer to the configuration file of resources/resource.json.
