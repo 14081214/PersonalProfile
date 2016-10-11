@@ -116,76 +116,42 @@ class Main extends egret.DisplayObjectContainer {
      * 创建游戏场景
      * Create a game scene
      */
-    
     private page01;
     private page02;
-    private stageH:number;
-    private stageW:number;
-    //private scrollRect;
+    private stageH;
+    private stageW;
+
     private starttouchPosY;
-    private currentPosY;
-    private moviedistace;
+    private currentpagePosY;
+    private movedistance;
 
-    private createGameScene():void{
-        this.stageH = this.stage.stageHeight;
+    private createGameScene():void {
         this.stageW = this.stage.stageWidth;
-        this.scrollRect = new egret.Rectangle(0,0,this.stageW,this.stageH*2);
-        var starttouchPosY = 0;
-        var currentPosY = 0;
-        var movedistance = 0;
+        this.stageH = this.stage.stageHeight;
 
+        this.scrollRect = new egret.Rectangle(0,0,this.stageW,this.stageH*2);
         //this.cacheAsBitmap = true;   //缓存
         this.touchEnabled = true;
-        this.addEventListener(egret.TouchEvent.TOUCH_BEGIN,startScroll,this);
-        this.addEventListener(egret.TouchEvent.TOUCH_END,stopScroll,this);
 
-        function startScroll(e:egret.TouchEvent):void{
-            if((this.scrollRect.y%this.stageH)!=0){       //防止偏移
-                this.scrollRect.y = currentPosY;
-            }
-            starttouchPosY = e.stageY;
-            currentPosY = this.scrollRect.y;
-            this.addEventListener(egret.TouchEvent.TOUCH_MOVE,onScroll,this);
-        }
+        this.starttouchPosY = 0;
+        this.currentpagePosY = 0;
+        this.movedistance = 0;
 
-        function onScroll(e:egret.TouchEvent):void{
-            var rect:egret.Rectangle = this.scrollRect;
-            movedistance = starttouchPosY - e.stageY;
-            rect.y = currentPosY + movedistance;
-            this.scrollRect = rect;
-            
-        }
-
-        function stopScroll(e:egret.TouchEvent):void{
-            var rect:egret.Rectangle = this.scrollRect;
-            if((movedistance>=(this.stage.stageHight/3))&&currentPosY!=this.stageH){
-                rect.y = currentPosY + this.stageH;
-                this.scrollRect = rect;
-                movedistance = 0;
-            }
-            else if((movedistance<=(-(this.stage.stageHeight/3)))&&currentPosY!=0){
-                rect.y = currentPosY - this.stageH;
-                this.scrollRect = rect;
-                movedistance = 0;
-            }
-            else{
-                movedistance = 0;
-                rect.y = currentPosY;
-                this.scrollRect = rect;
-            }
-        }
+        this.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.startScroll,this);
+        this.addEventListener(egret.TouchEvent.TOUCH_END,this.stopScroll,this);
 
         var page01 = new egret.DisplayObjectContainer;
         this.addChild(page01);
         page01.width = this.stageW;
         page01.height = this.stageH;
-
+        page01.touchEnabled = true;
+        
         var sky:egret.Bitmap = this.createBitmapByName("bg_021_jpg");
         page01.addChild(sky);
-        var stageW01:number = this.stage.stageWidth;
-        var stageH02:number = this.stage.stageHeight;
-        sky.width = this.stageW;
-        sky.height = this.stageH;
+        var stageW:number = this.stage.stageWidth;
+        var stageH:number = this.stage.stageHeight;
+        sky.width = stageW;
+        sky.height = stageH;
 
         var topMask = new egret.Shape();
         topMask.graphics.beginFill(0xFFFFFF, 0.8);
@@ -215,6 +181,7 @@ class Main extends egret.DisplayObjectContainer {
 
         },this);
 
+
         var line = new egret.Shape();
         line.graphics.lineStyle(2,0xffffff);
         line.graphics.moveTo(0,0);
@@ -238,7 +205,7 @@ class Main extends egret.DisplayObjectContainer {
         colorLabel.textColor = 0xffffff;
         colorLabel.width = this.stageW - 172;
         colorLabel.textAlign = "center";
-        colorLabel.text = "Introduce";
+        colorLabel.text = "Weicome";
         colorLabel.size = 60;
         colorLabel.x = 100;
         colorLabel.y = 50;
@@ -261,6 +228,7 @@ class Main extends egret.DisplayObjectContainer {
         //page02.y = stageH;
         page02.width = this.stageW;
         page02.height = this.stageH;
+        page02.touchEnabled = true;
 
         var sky02:egret.Bitmap = this.createBitmapByName("bg_03_jpeg");
         page02.addChild(sky02);
@@ -274,11 +242,69 @@ class Main extends egret.DisplayObjectContainer {
         slide02.x = 290;
         slide02.y = 1035;
         
+        var topMask02 = new egret.Shape();
+        topMask02.graphics.beginFill(0x000000, 0.8);
+        topMask02.graphics.drawRect(0, 0, this.stageW, 892);
+        topMask02.graphics.endFill();
+        topMask02.y = 125;
+        page02.addChild(topMask02);
+
+        topMask02.addEventListener(egret.TouchEvent.TOUCH_MOVE,()=>{
+            egret.Tween.get(topMask,{loop:true}).to({alpha:0},1,egret.Ease.circIn).to({alpha:0.5},2000,egret.Ease.circIn);
+        },this)
+
+        var Text01 = new egret.TextField();
+        Text01.textColor = 0x000000;
+        Text01.width = this.stageW - 172;
+        Text01.textAlign = "center";
+        Text01.text = "Introduce";
+        Text01.size = 60;
+        Text01.x = 100;
+        Text01.y = 50;
+        page02.addChild(Text01);
+
+        
 
         //根据name关键字，异步获取一个json配置文件，name属性请参考resources/resource.json配置文件的内容。
         // Get asynchronously a json configuration file according to name keyword. As for the property of name please refer to the configuration file of resources/resource.json.
         RES.getResAsync("description_json", this.startAnimation, this)
     }
+
+    private startScroll(e:egret.TouchEvent):void{
+            if((this.scrollRect.y%this.stageH)!=0){       //防止偏移
+                this.scrollRect.y = this.currentpagePosY;
+            }
+            this.starttouchPosY = e.stageY;
+            this.currentpagePosY = this.scrollRect.y;
+            this.addEventListener(egret.TouchEvent.TOUCH_MOVE,this.onScroll,this);
+        }
+
+        private onScroll(e:egret.TouchEvent):void{
+            var rect:egret.Rectangle = this.scrollRect;
+            this.movedistance = this.starttouchPosY - e.stageY;
+            rect.y = this.currentpagePosY + this.movedistance;
+            this.scrollRect = rect;
+            
+        }
+
+        private stopScroll(e:egret.TouchEvent):void{
+            var rect:egret.Rectangle = this.scrollRect;
+            if((this.movedistance>=(this.stage.stageHeight/3))&&this.currentpagePosY!=this.stageH){
+                rect.y = this.currentpagePosY + this.stageH;
+                this.scrollRect = rect;
+                this.movedistance = 0;
+            }
+            else if((this.movedistance<=(-(this.stage.stageHeight/3)))&&this.currentpagePosY!=0){
+                rect.y = this.currentpagePosY - this.stageH;
+                this.scrollRect = rect;
+                this.movedistance = 0;
+            }
+            else{
+                this.movedistance = 0;
+                rect.y = this.currentpagePosY;
+                this.scrollRect = rect;
+            }
+        }
 
     /**
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
@@ -332,7 +358,6 @@ class Main extends egret.DisplayObjectContainer {
     private changeDescription(textfield:egret.TextField, textFlow:Array<egret.ITextElement>):void {
         textfield.textFlow = textFlow;
     }
-
 }
 
 

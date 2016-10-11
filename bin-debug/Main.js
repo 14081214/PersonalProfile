@@ -96,34 +96,45 @@ var Main = (function (_super) {
             this.loadingView.setProgress(event.itemsLoaded, event.itemsTotal);
         }
     };
-    /**
-     * 创建游戏场景
-     * Create a game scene
-     */
     p.createGameScene = function () {
+        this.stageW = this.stage.stageWidth;
+        this.stageH = this.stage.stageHeight;
+        this.scrollRect = new egret.Rectangle(0, 0, this.stageW, this.stageH * 2);
+        //this.cacheAsBitmap = true;   //缓存
+        this.touchEnabled = true;
+        this.starttouchPosY = 0;
+        this.currentpagePosY = 0;
+        this.movedistance = 0;
+        this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.startScroll, this);
+        this.addEventListener(egret.TouchEvent.TOUCH_END, this.stopScroll, this);
+        var page01 = new egret.DisplayObjectContainer;
+        this.addChild(page01);
+        page01.width = this.stageW;
+        page01.height = this.stageH;
+        page01.touchEnabled = true;
         var sky = this.createBitmapByName("bg_021_jpg");
-        this.addChild(sky);
+        page01.addChild(sky);
         var stageW = this.stage.stageWidth;
         var stageH = this.stage.stageHeight;
         sky.width = stageW;
         sky.height = stageH;
         var topMask = new egret.Shape();
         topMask.graphics.beginFill(0xFFFFFF, 0.8);
-        topMask.graphics.drawRect(0, 0, stageW, 892);
+        topMask.graphics.drawRect(0, 0, this.stageW, 892);
         topMask.graphics.endFill();
-        topMask.y = 113;
-        this.addChild(topMask);
+        topMask.y = 125;
+        page01.addChild(topMask);
         egret.Tween.get(topMask).to({ alpha: 0 }, 1, egret.Ease.circIn).to({ alpha: 0.5 }, 2000, egret.Ease.circIn);
         var icon = this.createBitmapByName("mark_01_png");
-        this.addChild(icon);
-        icon.x = 26;
-        icon.y = 36;
+        page01.addChild(icon);
+        icon.x = 36;
+        icon.y = 43;
         icon.touchEnabled = true; //触动图标
-        icon.addEventListener(egret.TouchEvent.TOUCH_MOVE, function () {
-            egret.Tween.get(icon).to({ x: 560 }, 3000, egret.Ease.circIn).to({ y: 1033 }, 5000, egret.Ease.circIn).to({ x: 26 }, 3000, egret.Ease.circIn).to({ y: 36 }, 5000, egret.Ease.circIn);
-        }, this);
+        //icon.addEventListener(egret.TouchEvent.TOUCH_MOVE,()=>{
+        egret.Tween.get(icon, { loop: true }).to({ y: 1033 }, 6000, egret.Ease.sineIn).to({ x: 550 }, 4000, egret.Ease.sineIn).to({ y: 43 }, 6000, egret.Ease.sineIn).to({ y: 1033 }, 6000, egret.Ease.sineIn).to({ x: 36 }, 4000, egret.Ease.sineIn).to({ y: 43 }, 6000, egret.Ease.sineIn);
+        //},this);
         var slide = this.createBitmapByName("mark_02_png");
-        this.addChild(slide);
+        page01.addChild(slide);
         slide.x = 290;
         slide.y = 1035;
         slide.touchEnabled = true;
@@ -132,33 +143,108 @@ var Main = (function (_super) {
         var line = new egret.Shape();
         line.graphics.lineStyle(2, 0xffffff);
         line.graphics.moveTo(0, 0);
-        line.graphics.lineTo(0, 117);
+        line.graphics.lineTo(0, 60);
         line.graphics.endFill();
-        line.x = 172;
-        line.y = 61;
-        this.addChild(line);
+        line.x = 36;
+        line.y = 40;
+        page01.addChild(line);
+        var line2 = new egret.Shape();
+        line2.graphics.lineStyle(2, 0xffffff);
+        line2.graphics.moveTo(0, 0);
+        line2.graphics.lineTo(0, 60);
+        line2.graphics.endFill();
+        line2.x = 620;
+        line2.y = 40;
+        page01.addChild(line2);
         var colorLabel = new egret.TextField();
         colorLabel.textColor = 0xffffff;
-        colorLabel.width = stageW - 172;
+        colorLabel.width = this.stageW - 172;
         colorLabel.textAlign = "center";
-        colorLabel.text = "Hello Egret";
-        colorLabel.size = 24;
-        colorLabel.x = 172;
-        colorLabel.y = 80;
-        this.addChild(colorLabel);
+        colorLabel.text = "Weicome";
+        colorLabel.size = 60;
+        colorLabel.x = 100;
+        colorLabel.y = 50;
+        page01.addChild(colorLabel);
         var textfield = new egret.TextField();
-        this.addChild(textfield);
+        page01.addChild(textfield);
         textfield.alpha = 0;
-        textfield.width = stageW - 172;
+        textfield.width = this.stageW - 172;
         textfield.textAlign = egret.HorizontalAlign.CENTER;
         textfield.size = 24;
         textfield.textColor = 0xffffff;
-        textfield.x = 172;
+        textfield.x = 100;
         textfield.y = 135;
         this.textfield = textfield;
+        var page02 = new egret.DisplayObjectContainer;
+        page02.y = this.stageH;
+        this.addChild(page02);
+        //page02.y = stageH;
+        page02.width = this.stageW;
+        page02.height = this.stageH;
+        page02.touchEnabled = true;
+        var sky02 = this.createBitmapByName("bg_03_jpeg");
+        page02.addChild(sky02);
+        var stageW02 = this.stage.stageWidth;
+        var stageH02 = this.stage.stageHeight;
+        sky02.width = stageW02;
+        sky02.height = stageH02;
+        var slide02 = this.createBitmapByName("mark_02_png");
+        page02.addChild(slide02);
+        slide02.x = 290;
+        slide02.y = 1035;
+        var topMask02 = new egret.Shape();
+        topMask02.graphics.beginFill(0x000000, 0.8);
+        topMask02.graphics.drawRect(0, 0, this.stageW, 892);
+        topMask02.graphics.endFill();
+        topMask02.y = 125;
+        page02.addChild(topMask02);
+        topMask02.addEventListener(egret.TouchEvent.TOUCH_MOVE, function () {
+            egret.Tween.get(topMask, { loop: true }).to({ alpha: 0 }, 1, egret.Ease.circIn).to({ alpha: 0.5 }, 2000, egret.Ease.circIn);
+        }, this);
+        var Text01 = new egret.TextField();
+        Text01.textColor = 0x000000;
+        Text01.width = this.stageW - 172;
+        Text01.textAlign = "center";
+        Text01.text = "Introduce";
+        Text01.size = 60;
+        Text01.x = 100;
+        Text01.y = 50;
+        page02.addChild(Text01);
         //根据name关键字，异步获取一个json配置文件，name属性请参考resources/resource.json配置文件的内容。
         // Get asynchronously a json configuration file according to name keyword. As for the property of name please refer to the configuration file of resources/resource.json.
         RES.getResAsync("description_json", this.startAnimation, this);
+    };
+    p.startScroll = function (e) {
+        if ((this.scrollRect.y % this.stageH) != 0) {
+            this.scrollRect.y = this.currentpagePosY;
+        }
+        this.starttouchPosY = e.stageY;
+        this.currentpagePosY = this.scrollRect.y;
+        this.addEventListener(egret.TouchEvent.TOUCH_MOVE, this.onScroll, this);
+    };
+    p.onScroll = function (e) {
+        var rect = this.scrollRect;
+        this.movedistance = this.starttouchPosY - e.stageY;
+        rect.y = this.currentpagePosY + this.movedistance;
+        this.scrollRect = rect;
+    };
+    p.stopScroll = function (e) {
+        var rect = this.scrollRect;
+        if ((this.movedistance >= (this.stage.stageHeight / 3)) && this.currentpagePosY != this.stageH) {
+            rect.y = this.currentpagePosY + this.stageH;
+            this.scrollRect = rect;
+            this.movedistance = 0;
+        }
+        else if ((this.movedistance <= (-(this.stage.stageHeight / 3))) && this.currentpagePosY != 0) {
+            rect.y = this.currentpagePosY - this.stageH;
+            this.scrollRect = rect;
+            this.movedistance = 0;
+        }
+        else {
+            this.movedistance = 0;
+            rect.y = this.currentpagePosY;
+            this.scrollRect = rect;
+        }
     };
     /**
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
